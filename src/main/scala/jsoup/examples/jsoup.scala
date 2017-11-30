@@ -12,9 +12,8 @@ object jsoup extends App {
       .get()
     val title = doc.title()
     val links = doc.select("a[href]")
-
-    val body = doc.body().text()
     var cnt = 0
+    val body = doc.body().text()
     val pw = new PrintWriter(new File(("Crawled Links.txt")))
 
     for (link <- links) {
@@ -29,8 +28,7 @@ object jsoup extends App {
 
     val fileBodyPage = new PrintWriter(new File("body of page.txt"))
     fileBodyPage.write("\n $body")
-    println("\n\n________")
-    println(s"\nBody of page is :\n $body")
+    println(s"\n________Body of page is :\n $body")
     println(s"\n--total Links are : $cnt")
   } catch {
     case _: Throwable =>
