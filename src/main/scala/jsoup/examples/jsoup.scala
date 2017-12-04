@@ -25,13 +25,13 @@ object jsoup extends App {
       var cnt = 0
 
       for (element <- elements) {
-        currentDepth = currentDepth - 1
+//        currentDepth = currentDepth - 1
         cnt += 1
 
         if (!element.attr("href").isEmpty()) {
           links += element.attr("abs:href") + "\n";
           println("###################### : " + links)
-          crawl(element.attr("abs:href"), currentDepth)
+          crawl(element.attr("abs:href"), currentDepth - 1)
 
 
         }
@@ -57,6 +57,6 @@ object jsoup extends App {
       }
 
     }
-    crawl("https://www.google.co.in/", 3)
+    crawl("https://www.google.co.in/", 2)
   }
 
