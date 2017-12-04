@@ -2,37 +2,51 @@ package jsoup.examples
 
 import org.jsoup.Jsoup
 import java.io._
+
+import org.jsoup.select.Elements
+
+import scala.collection.JavaConverters._
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 object jsoup extends App {
 
-  try {
-    val doc = Jsoup
-      .connect("http://www.synerzip.com/")
-      .get()
-    val title = doc.title()
-    val links = doc.select("a[href]")
-    var cnt = 0
-    val body = doc.body().text()
-    val pw = new PrintWriter(new File(("Crawled Links.txt")))
 
-    for (link <- links) {
-      cnt += 1
-      pw.write(
-        s"\n\n ${cnt})title : " + link.text + "\nlink : " + link.attr("href"))
-      println(s"\n \t ${cnt}) title : " + link.text)
-      println("\t     link : " + link.attr("href"))
-    }
+  var links : String = ""
 
-    pw.close()
+  def crawl(url:String, depth:Integer): Unit = {
+var currentDepth = depth
+    if(currentDepth > 0 ) {
+      val doc = Jsoup
+        .connect(url)
+        .get()
 
-    val fileBodyPage = new PrintWriter(new File("body of page.txt"))
-    fileBodyPage.write("\n $body")
-    println(s"\n________Body of page is :\n $body")
+      var elements: Elements = doc.select("a[href]")
+      var cnt = 0
+
+      for (element <- elements) {
+        currentDepth -= 1
+        cnt += 1
+
+
+        links += element.attr("href")
+        println("\t \nlink : " + element.attr("href"))
+
+        //      links += element.attr("href")
+
+      }
+
+      crawl(links, currentDepth)
+
+
+    println(s"\n________Body of page is :\n ")
+
+    println(s"\n\n\n\n----------final $links")
     println(s"\n--total Links are : $cnt")
-  } catch {
-    case _: Throwable =>
-      println(
-        "\n Something went wrong, may be web site has disabled robot.txt!")
+  }else
+    {
+      println("*******************else part")}
+
   }
+  crawl("https://www.bbc.co.uk/",2)
 }
