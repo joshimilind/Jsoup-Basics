@@ -12,11 +12,11 @@ import scala.collection.JavaConverters._
 object jsoup extends App {
 
 
-  var links : String = ""
+  var links: String = " "
 
-  def crawl(url:String, depth:Integer): Unit = {
-var currentDepth = depth
-    if(currentDepth > 0 ) {
+  def crawl(url: String, depth: Integer): Unit = {
+    var currentDepth = depth
+    if (currentDepth > 0) {
       val doc = Jsoup
         .connect(url)
         .get()
@@ -25,28 +25,38 @@ var currentDepth = depth
       var cnt = 0
 
       for (element <- elements) {
-        currentDepth -= 1
+        currentDepth = currentDepth - 1
         cnt += 1
 
+        if (!element.attr("href").isEmpty()) {
+          links += element.attr("abs:href") + "\n";
+          println("###################### : " + links)
+          crawl(element.attr("abs:href"), currentDepth)
 
-        links += element.attr("href")
-        println("\t \nlink : " + element.attr("href"))
 
-        //      links += element.attr("href")
+        }
 
+          //        links += element.attr("href")
+          //        println("\t \nlink : " + element.attr("href"))
+
+          //      links += element.attr("href")
+
+        }
+
+        //      crawl(elements.attr("abs:href"), currentDepth)
+
+
+        println(s"\n________Body of page is :\n ")
+
+        println(s"\n\n\n\n----------final $links")
+        println(s"\n--total Links are : $cnt")
+      }
+      else
+      {
+        println("*******************else part")
       }
 
-      crawl(links, currentDepth)
-
-
-    println(s"\n________Body of page is :\n ")
-
-    println(s"\n\n\n\n----------final $links")
-    println(s"\n--total Links are : $cnt")
-  }else
-    {
-      println("*******************else part")}
-
+    }
+    crawl("https://www.google.co.in/", 3)
   }
-  crawl("https://www.bbc.co.uk/",2)
-}
+
